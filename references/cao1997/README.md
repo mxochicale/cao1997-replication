@@ -1,10 +1,8 @@
+# 1447 Google Scholar Citations by 8march2018  
+https://scholar.google.co.uk/scholar?cites=4510116052837176787&as_sdt=2005&sciodt=0,5&hl=en  
+FILE: https://scholar.google.co.uk/scholar?cluster=4510116052837176787  
+PDF: https://github.com/mxochicale/cao1997-replication/blob/master/references/cao1997/cao1997.pdf   
 
-
-
-1447 Google Scholar Citations by 2march2018
-https://scholar.google.co.uk/scholar?cites=4510116052837176787&as_sdt=2005&sciodt=0,5&hl=en
-FILE: https://scholar.google.co.uk/scholar?cluster=4510116052837176787
-PDF:
 
 # BibTex-File
 ```
@@ -33,8 +31,8 @@ above advantages of the method."
 
 # Practical method for determining the minimum embedding dimension of a scalar time series
 
-Cao Liangyue (University of Western Australia)
-https://www.scopus.com/authid/detail.uri?authorId=7401638149
+Cao Liangyue (University of Western Australia)  
+https://www.scopus.com/authid/detail.uri?authorId=7401638149  
 
 ## Abstract
 A practical method is proposed to determine the minimum embedding dimension 
