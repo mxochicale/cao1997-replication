@@ -1,7 +1,7 @@
 library(data.table)
-library(deSolve)
+library(desolve)
 library(ggplot2)
-library(RColorBrewer)
+library(rcolorbrewer)
 
 
 
@@ -14,35 +14,35 @@ r_scripts_path <- getwd()
 
 
 ################################################################################
-# Lorenz Function
-Lorenz <- function(t, state, parameters){
+# lorenz function
+lorenz <- function(t, state, parameters){
           with(as.list( c(state,parameters)),
               {
               #rate of change
-              dX <- sigma*(Y-X)
-              dY <- rho*X - X*Z - Y
-              dZ <- X*Y - beta*Z
+              dx <- sigma*(y-x)
+              dy <- rho*x - x*z - y
+              dz <- x*y - beta*z
 
               # return the rate of change
-              list( c(dX, dY, dZ) )
+              list( c(dx, dy, dz) )
               }
           )# end with(as.list...
 }
 
 
 ################################################################################
-# Lorenz time-series
+# lorenz time-series
 
 #define controlling parameters
-# rho     - Scaled Rayleigh number.
-# sigma   - Prandtl number.
-# beta   - Geometry ascpet ratio.
+# rho     - scaled rayleigh number.
+# sigma   - prandtl number.
+# beta   - geometry ascpet ratio.
 parameters <- c(rho=28, sigma= 10, beta=8/3)
 
 #define initial state
-state <- c(X=1, Y=1, Z=1)
-# yini <- c(X = 0.01, Y = 0.001, Z = 0.001)
-# state <- c(X=20, Y=41, Z=20)
+state <- c(x=1, y=1, z=1)
+# yini <- c(x = 0.01, y = 0.001, z = 0.001)
+# state <- c(x=20, y=41, z=20)
 
 
 # define integrations times
@@ -51,32 +51,32 @@ times <- seq(0,150, by=0.1)
 # timeserie <- seq(0, 150, by = 0.1)
 
 #perform the integration and assign it to variable 'out'
-out <- ode(y=state, times= times, func=Lorenz, parms=parameters)
-maxLength <- dim(out)[1]
+out <- ode(y=state, times= times, func=lorenz, parms=parameters)
+maxlength <- dim(out)[1]
 
 
-# Lorenz Time series as data.table object
+# lorenz time series as data.table object
 lts <- as.data.table(out)
-func <-function(x) {list("Lorenz")}
+func <-function(x) {list("lorenz")}
 lts[,c("type"):=func(), ]
-lts[,n:=seq(.N)]
+lts[,n:=seq(.n)]
 setcolorder(lts, c(5,6,1:4))
 
 
 
 ################################################################################
-### (4.1) Windowing Data
+### (4.1) windowing data
 ###
-windowframe = 1000:maxLength;
-lts <- lts[,.SD[windowframe],by=.(type)];
+windowframe = 1000:maxlength;
+lts <- lts[,.sd[windowframe],by=.(type)];
 
 
 ################################################################################
-### Plot time series
+### plot time series
 p <- ggplot(lts) +
-   geom_line(aes(x=n,y=X,col='x'),lwd = 1,alpha=0.8)+
-   geom_line(aes(x=n,y=Y,col='y'),lwd = 1,alpha=0.8)+
-   geom_line(aes(x=n,y=Z,col='z'),lwd = 1,alpha=0.8)+
+   geom_line(aes(x=n,y=x,col='x'),lwd = 1,alpha=0.8)+
+   geom_line(aes(x=n,y=y,col='y'),lwd = 1,alpha=0.8)+
+   geom_line(aes(x=n,y=z,col='z'),lwd = 1,alpha=0.8)+
    facet_wrap(~type, scales = 'free', nrow = 4)+
    theme_bw(20)
 
@@ -113,11 +113,12 @@ names(E) <- gsub("V2", "E2", names(E))
 ################################################################################
 ### Plot E values
 e1 <- ggplot(E) +
-    geom_line( aes(x=dim,y=E1, colour=factor(tau) ),lwd = 3,alpha=0.5)+
-    geom_point( aes(x=dim,y=E1, shape=factor(tau), colour=factor(tau)), size=5, stroke =1 )+
-    scale_color_manual(values = colorRampPalette(brewer.pal(n = 8, name="Blues"))(maxtau) ) +
-    scale_shape_manual(values= 1:(maxtau))+
-    labs(x='Embedding dimension')+
+    	geom_line( aes(x=dim,y=E1, colour=factor(tau) ),lwd = 3,alpha=0.5)+
+    	geom_point( aes(x=dim,y=E1, shape=factor(tau), colour=factor(tau)  ), size=5, stroke =1 )+
+    	scale_color_manual(values = colorRampPalette(brewer.pal(n = 10, name="RdBu"))(maxtau) ) +
+    	scale_shape_manual(values= 1:(maxtau))+
+    
+	labs(x='Embedding dimension')+
     coord_cartesian(xlim = c(0, (maxdim-1) ), ylim = c(0, 1.5 ) )+
     theme(legend.position = c(0.9, 0.3) )+
     theme( axis.title.x = element_text(size = rel(2.5), angle = 0),
@@ -133,8 +134,9 @@ e1 <- ggplot(E) +
 e2 <- ggplot(E) +
     geom_line( aes(x=dim,y=E2, colour=factor(tau) ),lwd = 3,alpha=0.5)+
     geom_point( aes(x=dim,y=E2, shape=factor(tau), colour=factor(tau)), size=5, stroke =1 )+
-    scale_color_manual(values = colorRampPalette(brewer.pal(n = 8, name="Blues"))(maxtau) ) +
+    scale_color_manual(values = colorRampPalette(brewer.pal(n = 8, name="RdBu"))(maxtau) ) +
     scale_shape_manual(values= 1:(maxtau))+
+
     labs(x='Embedding dimension')+
     coord_cartesian(xlim = c(0, (maxdim-1) ), ylim = c(0, 1.5 ) )+
     theme(legend.position = c(0.9, 0.3) )+
