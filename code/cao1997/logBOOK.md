@@ -5,9 +5,15 @@ logBOOK
 
 ## TODO
 
-* [ ] `examples/helloworld/example-cao97.R` has been created, however the code has to be cleaned 
-and use little dependencies  
+* [ ] time of computation of E values for noise time series is taking a lot of time.
+	revise the reason of that and make a simple example.
+	(added:16march2018 0146; sorted:?)
 
+* [ ] integrate each of the plots for E values into the function `cao97_functions.R`
+	(added:16march2018 0143; sorted:?)
+
+* [ ] `examples/helloworld/example-cao97.R` has been created, however the code has to be cleaned 
+and use as little dependencies as possible  
 (added:9march0019, sorted:?)
 
 
@@ -27,4 +33,4 @@ Comment the code every three lines. Learn more at: http://datacolada.org/69
 
 ## SORTED
 
-
+* [x] implementation of computation of E values and plots for `~/examples` (added:9march2018, sorted:16march2018)
