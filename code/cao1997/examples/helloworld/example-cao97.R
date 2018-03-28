@@ -1,7 +1,31 @@
-library(data.table)
-library(desolve)
-library(ggplot2)
-library(rcolorbrewer)
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#
+#
+# FileName:    example-cao97.R
+# Description:
+#
+#
+############
+# How to use
+#
+# source('~/cao97_functions.R')
+#
+#
+#
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Miguel P. Xochicale [http://mxochicale.github.io]
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+################################################################################
+# (0) Loading Functions and Libraries and Setting up digits
+library(data.table) # for manipulating data
+library(ggplot2) # for plotting 
+library(deSolve)
+library(RColorBrewer)
+
+
 
 
 
@@ -59,7 +83,7 @@ maxlength <- dim(out)[1]
 lts <- as.data.table(out)
 func <-function(x) {list("lorenz")}
 lts[,c("type"):=func(), ]
-lts[,n:=seq(.n)]
+lts[,n:=seq(.N)]
 setcolorder(lts, c(5,6,1:4))
 
 
@@ -68,7 +92,7 @@ setcolorder(lts, c(5,6,1:4))
 ### (4.1) windowing data
 ###
 windowframe = 1000:maxlength;
-lts <- lts[,.sd[windowframe],by=.(type)];
+lts <- lts[,.SD[windowframe],by=.(type)];
 
 
 ################################################################################
@@ -80,8 +104,6 @@ p <- ggplot(lts) +
    facet_wrap(~type, scales = 'free', nrow = 4)+
    theme_bw(20)
 
-# dev.new(xpos=0,ypos=0,width=18, height=6)
-# p
 
 
 
@@ -93,16 +115,18 @@ setwd('../../functions')
 source('cao97_functions.R')
 
 maxdim <- 31
-maxtau <- 15
+maxtau <- 4
+
 
 E <- data.table()
 for (tau_i in 1:maxtau){
-    Et<- as.data.table(cao97sub(lts$X,maxdim,tau_i) )
-    func <-function(x) {list( tau_i )}
-    Et[,c("tau"):=func(), ]
-    Et[,dim:=seq(.N)]
-    setcolorder(Et, c(3,4,1:2))
-    E <- rbind(E, Et )
+	message('tau:', tau_i)
+    	Et<- as.data.table(cao97sub(lts$x,maxdim,tau_i) )
+    	func <-function(x) {list( tau_i )}
+    	Et[,c("tau"):=func(), ]
+    	Et[,dim:=seq(.N)]
+    	setcolorder(Et, c(3,4,1:2))
+    	E <- rbind(E, Et )
 }
 
 names(E) <- gsub("V1", "E1", names(E))
@@ -112,49 +136,13 @@ names(E) <- gsub("V2", "E2", names(E))
 
 ################################################################################
 ### Plot E values
-e1 <- ggplot(E) +
-    	geom_line( aes(x=dim,y=E1, colour=factor(tau) ),lwd = 3,alpha=0.5)+
-    	geom_point( aes(x=dim,y=E1, shape=factor(tau), colour=factor(tau)  ), size=5, stroke =1 )+
-    	scale_color_manual(values = colorRampPalette(brewer.pal(n = 10, name="RdBu"))(maxtau) ) +
-    	scale_shape_manual(values= 1:(maxtau))+
-    
-	labs(x='Embedding dimension')+
-    coord_cartesian(xlim = c(0, (maxdim-1) ), ylim = c(0, 1.5 ) )+
-    theme(legend.position = c(0.9, 0.3) )+
-    theme( axis.title.x = element_text(size = rel(2.5), angle = 0),
-           axis.text.x = element_text(size = rel(2), angle = 0),
-           axis.title.y = element_text(size = rel(2.5), angle = 90),
-           axis.text.y = element_text(size = rel(2), angle = 90)
-           )+
-    theme(legend.title = element_text(size = rel(1.5)),
-          legend.text = element_text(size = rel(1.5))
-          )
-#e1
 
-e2 <- ggplot(E) +
-    geom_line( aes(x=dim,y=E2, colour=factor(tau) ),lwd = 3,alpha=0.5)+
-    geom_point( aes(x=dim,y=E2, shape=factor(tau), colour=factor(tau)), size=5, stroke =1 )+
-    scale_color_manual(values = colorRampPalette(brewer.pal(n = 8, name="RdBu"))(maxtau) ) +
-    scale_shape_manual(values= 1:(maxtau))+
+e1 <- plotE1taus(E)
+e2 <- plotE2taus(E)
 
-    labs(x='Embedding dimension')+
-    coord_cartesian(xlim = c(0, (maxdim-1) ), ylim = c(0, 1.5 ) )+
-    theme(legend.position = c(0.9, 0.3) )+
-    theme( axis.title.x = element_text(size = rel(2.5), angle = 0),
-           axis.text.x = element_text(size = rel(2), angle = 0),
-           axis.title.y = element_text(size = rel(2.5), angle = 90),
-           axis.text.y = element_text(size = rel(2), angle = 90)
-           )+
-    theme(legend.title = element_text(size = rel(1.5)),
-          legend.text = element_text(size = rel(1.5))
-          )
 
-#e2
-
-# dev.new(xpos=0,ypos=0,width=18, height=6)
 
 
 
 ################################################################################
 setwd(r_scripts_path) ## go back to the r-script source path
-
